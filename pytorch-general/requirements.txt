@@ -1,0 +1,5 @@
+pytest
+fire
+loguru
+black
+jupyter
