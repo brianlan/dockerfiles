@@ -15,4 +15,6 @@ RUN pip install -r /workspace/requirements.txt -i https://pypi.tuna.tsinghua.edu
 RUN mkdir -p /home/rlan
 RUN mkdir -p /ssd/commondata
 
+RUN pip cache purge
+
 CMD [ "/bin/bash"  ]
