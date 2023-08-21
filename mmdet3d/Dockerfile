@@ -38,4 +38,9 @@ RUN conda clean --all \
     && cd /mmdetection3d \
     && pip install --no-cache-dir -e .
 
+RUN apt-get update && apt-get install libsparsehash-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir git+https://github.com/mit-han-lab/torchsparse.git@v1.4.0
+
 WORKDIR /mmdetection3d
