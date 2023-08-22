@@ -1,5 +1,5 @@
 jupyter
-jupyter_rlf
+jupyter_rfb
 pytest
 requests
 fire
