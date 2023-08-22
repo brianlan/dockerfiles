@@ -1,0 +1,10 @@
+jupyter
+jupyter_rlf
+pytest
+requests
+fire
+black
+loguru
+pandas
+flake8
+pyrender
