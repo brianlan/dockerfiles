@@ -8,3 +8,6 @@ loguru
 pandas
 flake8
 pyrender
+matplotlib
+imgui
+glfw

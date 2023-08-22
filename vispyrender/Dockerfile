@@ -1,7 +1,7 @@
 FROM continuumio/anaconda3:2021.05
 
 COPY ./sources.list /etc/apt/sources.list
-RUN apt-get update && apt-get install -y libgl1-mesa-glx libgl1-mesa-dri
+RUN apt-get update && apt-get install -y libgl1-mesa-glx libgl1-mesa-dri x11-apps
 
 COPY ./condarc-tsinghua /root/.condarc
 COPY ./condarc-tsinghua /opt/conda/.condarc
