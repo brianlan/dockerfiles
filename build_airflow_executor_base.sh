@@ -8,7 +8,7 @@
 #   exit 1
 # fi
 
-tag="cyclops-env:cuda11.3-ubuntu20.04"
+tag="airflow-executor-base:0.0.1"
 echo "Building Docker Image: ${tag}"
 
-docker build -f dockerfiles/cyclops-env/Dockerfile -t ${tag} .
+docker build -f dockerfiles/airflow-executor-base/Dockerfile -t ${tag}.
