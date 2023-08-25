@@ -5,7 +5,7 @@ RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates 
 
-COPY ./sources-bullseye.list /etc/apt/sources.list
+COPY source/debian-bullseye/sources.list /etc/apt/sources.list
 RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-recommends wget curl && \
@@ -17,7 +17,7 @@ RUN wget \
     && mkdir /root/.conda \
     && bash /Miniconda3-py38_23.5.1-0-Linux-x86_64.sh -b \
     && rm -f /Miniconda3-py38_23.5.1-0-Linux-x86_64.sh 
-COPY condarc /root/.condarc
+COPY source/conda/condarc /root/.condarc
 
 # install minio client
 RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc \
@@ -32,8 +32,7 @@ ENV PATH="/root/miniconda3/bin:/root/minio-binaries:${PATH}"
 ARG PATH="/root/miniconda3/bin:/root/minio-binaries:${PATH}"
 
 # install python packages
-COPY requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install --no-cache-dir tqdm==4.65.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 
 CMD [ "/bin/bash" ]
