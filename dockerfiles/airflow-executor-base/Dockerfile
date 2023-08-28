@@ -25,7 +25,7 @@ RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   -o /root/minio-binaries/mc
 
 RUN chmod +x /root/minio-binaries/mc
-RUN /root/minio-binaries/mc alias set minio224 http://192.168.22.224:9000/  mCpYhETiwPqlS1l4lzZm nuhCvHJ1cYW8FnU6HfSIT9ager7dl2QZkaJdKOp9
+RUN /root/minio-binaries/mc alias set minio23_222 http://192.168.23.222:9000/  raNm1huQ7U6J38XdXuSJ w8ZlHAXZEpvInd9NTNI4wzqKH6RW2ZgAMWJk7tpK
 
 # set PATH
 ENV PATH="/root/miniconda3/bin:/root/minio-binaries:${PATH}"
