@@ -29,8 +29,8 @@ ADD tools/mc /usr/bin/
 RUN mc alias set minio23_222 http://192.168.23.222:9000/  raNm1huQ7U6J38XdXuSJ w8ZlHAXZEpvInd9NTNI4wzqKH6RW2ZgAMWJk7tpK
 
 # install pytorch
-RUN mc cp minio23_222/tools/torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl .
-RUN mc cp minio23_222/tools/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl .
+RUN mc cp minio23_222/tools/python-packages/torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl .
+RUN mc cp minio23_222/tools/python-packages/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl .
 RUN pip install --no-cache-dir torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
 RUN rm torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
 RUN pip install --no-cache-dir torchaudio==0.7.2
@@ -65,7 +65,7 @@ RUN pip install --no-cache-dir pycocotools==2.0.5
 
 # prepare pytorch resnet-18 pretrain model
 RUN mkdir -p /root/.cache/torch/hub/checkpoints/ \
-    && mc cp minio23_222/tools/resnet18-5c106cde.pth /root/.cache/torch/hub/checkpoints/
+    && mc cp minio23_222/tools/pretrain-models/resnet18-5c106cde.pth /root/.cache/torch/hub/checkpoints/
 
 WORKDIR /workspace
 
