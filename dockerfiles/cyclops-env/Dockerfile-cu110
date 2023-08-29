@@ -68,6 +68,14 @@ RUN pip install --no-cache-dir pycocotools==2.0.5
 RUN mkdir -p /root/.cache/torch/hub/checkpoints/ \
     && mc cp minio23_222/tools/pretrain-models/resnet18-5c106cde.pth /root/.cache/torch/hub/checkpoints/
 
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y s3fs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
 WORKDIR /workspace
 
 CMD [ "/bin/bash"  ]
