@@ -17,7 +17,7 @@ ENV PATH=/root/miniconda3/bin:$PATH
 RUN apt-get update \
     && apt-get install -y x11-apps libgl1-mesa-glx ffmpeg libsm6 libxext6 \
     '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev \
-    libxkbcommon-dev libxkbcommon-x11-dev \
+    libxkbcommon-dev libxkbcommon-x11-dev vim \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
