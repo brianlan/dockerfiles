@@ -12,8 +12,8 @@ ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
-    && apt-get install -y npm vim \
+    && apt-get install -y npm vim git apache2 \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-CMD ["/bin/bash"]
+CMD ["apachectl", "-D", "FOREGROUND"]
