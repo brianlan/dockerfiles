@@ -30,3 +30,4 @@ RUN pip --no-cache-dir install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torch
 RUN pip --no-cache-dir install numpy llvmlite numba opencv-python open3d -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 RUN pip --no-cache-dir install tensorboardX easydict pyyaml==5.4.1 scipy==1.5.4 scikit-image tqdm SharedArray six -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 RUN pip --no-cache-dir install spconv-cu113 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+RUN cd /tmp && wget http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_386.deb && dpkg -i s5cmd_2.2.2_linux_386.deb
