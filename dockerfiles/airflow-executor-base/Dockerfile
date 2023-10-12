@@ -24,15 +24,15 @@ RUN curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   --create-dirs \
   -o /root/minio-binaries/mc
 
-RUN chmod +x /root/minio-binaries/mc
-RUN /root/minio-binaries/mc alias set minio23_222 http://192.168.23.222:9000/  raNm1huQ7U6J38XdXuSJ w8ZlHAXZEpvInd9NTNI4wzqKH6RW2ZgAMWJk7tpK
-
 # set PATH
 ENV PATH="/root/miniconda3/bin:/root/minio-binaries:${PATH}"
 ARG PATH="/root/miniconda3/bin:/root/minio-binaries:${PATH}"
 
 # install python packages
 RUN pip install --no-cache-dir tqdm==4.65.0 -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# prepare s3cmd
+RUN pip install --no-cache-dir s3cmd==2.3.0
 
 
 CMD [ "/bin/bash" ]
