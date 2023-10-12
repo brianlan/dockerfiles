@@ -22,6 +22,7 @@ RUN /opt/conda/envs/vispyrender_py38/bin/pip install --no-cache-dir jupyter \
     matplotlib \
     imgui \
     glfw \ 
+    opencv-python \
     -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 RUN echo "conda activate vispyrender_py38" >> /root/.bashrc
