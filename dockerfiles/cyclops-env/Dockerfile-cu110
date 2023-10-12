@@ -9,7 +9,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install anaconda
-RUN curl https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-2021.05-Linux-x86_64.sh --output anaconda.sh
+RUN curl http://192.168.22.208:8000/docker-building-files/anaconda/Anaconda3-2021.05-Linux-x86_64.sh --output anaconda.sh
 RUN /bin/bash anaconda.sh -b -p /opt/conda \
     && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
@@ -28,8 +28,8 @@ COPY source/conda/condarc /root/.condarc
 RUN pip install --no-cache-dir s3cmd==2.3.0
 
 # install pytorch
-COPY install/torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl .
-COPY install/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl .
+RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl --output torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl
+RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl --output torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
 RUN pip install --no-cache-dir torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
 RUN rm torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
 RUN pip install --no-cache-dir torchaudio==0.7.2
@@ -66,8 +66,13 @@ RUN pip install --no-cache-dir pycocotools==2.0.5
 # prepare pytorch resnet-18 pretrain model
 RUN mkdir -p /root/.cache/torch/hub/checkpoints
 
-COPY checkpoints/resnet18-5c106cde.pth /root/.cache/torch/hub/checkpoints/
+RUN curl http://192.168.22.208:8000/docker-building-files/checkpoints/resnet18-5c106cde.pth --output /root/.cache/torch/hub/checkpoints/resnet18-5c106cde.pth
 
+# install s5cmd
+RUN curl http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_amd64.deb --output s5cmd_2.2.2_linux_amd64.deb
+RUN dpkg -i s5cmd_2.2.2_linux_amd64.deb
+
+# install s3fs
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
