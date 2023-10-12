@@ -23,13 +23,12 @@ ENV CUDA_HOME=/usr/local/cuda
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 COPY source/conda/condarc /root/.condarc
 
-# prepare mc (Minio Client)
-ADD tools/mc /usr/bin/
-RUN mc alias set minio23_222 http://192.168.23.222:9000/  raNm1huQ7U6J38XdXuSJ w8ZlHAXZEpvInd9NTNI4wzqKH6RW2ZgAMWJk7tpK
+# prepare s3cmd
+RUN pip install --no-cache-dir s3cmd==2.3.0
 
 # install pytorch
-RUN mc cp minio23_222/tools/python-packages/torch-1.11.0+cu113-cp38-cp38-linux_x86_64.whl .
-RUN mc cp minio23_222/tools/python-packages/torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl .
+COPY torch-1.11.0+cu113-cp38-cp38-linux_x86_64.whl .
+COPY torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl .
 RUN pip install --no-cache-dir torch-1.11.0+cu113-cp38-cp38-linux_x86_64.whl torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl
 RUN pip install --no-cache-dir torchaudio==0.11.0
 RUN rm torch-1.11.0+cu113-cp38-cp38-linux_x86_64.whl torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl
