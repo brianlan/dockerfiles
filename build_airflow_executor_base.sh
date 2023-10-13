@@ -1,14 +1,16 @@
 #!/bin/bash
 
-# tag=$1
+ver="0.0.1"
 
-# if [ "$#" -ne 1 ]; then
-#   echo "Please provide <tag>"
-#   echo "Usage: $0 <tag> " >&2
-#   exit 1
-# fi
+if [ "$#" -ne 1 ]; then
+  echo "Please provide <version>"
+  echo "Usage: $0 <version> " >&2
+  exit 1
+fi
 
-tag="airflow-executor-base:0.0.1"
+ver=$1
+tag="airflow-executor-base:${ver}"
+
 echo "Building Docker Image: ${tag}"
 
-docker build -f dockerfiles/airflow-executor-base/Dockerfile -t ${tag}.
+docker build -f dockerfiles/airflow-executor-base/Dockerfile -t ${tag} .
