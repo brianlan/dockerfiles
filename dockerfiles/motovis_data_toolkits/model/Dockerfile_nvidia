@@ -1,0 +1,43 @@
+FROM nvidia/cuda:11.0.3-cudnn8-devel
+RUN mkdir -p /workspace
+
+# COPY source/ubuntu-20.04/sources.list /etc/apt/sources.list
+RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list
+
+# Install basics
+RUN apt-get update -y \
+    && apt-get install build-essential -y \
+    && apt-get install -y apt-utils git curl ca-certificates bzip2 tree htop wget \
+    && apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev bmon iotop g++ \
+    && apt install -y libgl1-mesa-glx x11-xserver-utils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# install anaconda
+RUN curl http://192.168.22.208:8000/docker-building-files/anaconda/Anaconda3-2021.05-Linux-x86_64.sh --output anaconda.sh
+RUN /bin/bash anaconda.sh -b -p /opt/conda \
+    && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
+    && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
+    && echo "conda activate base" >> ~/.bashrc \
+    && find /opt/conda/ -follow -type f -name '*.a' -delete \
+    && find /opt/conda/ -follow -type f -name '*.js.map' -delete \
+    && /opt/conda/bin/conda clean -afy
+RUN rm anaconda.sh
+
+ENV PATH=/opt/conda/bin:$PATH
+ENV CUDA_HOME=/usr/local/cuda
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+COPY source/conda/condarc /root/.condarc
+
+# install pytorch
+RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl --output torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl
+RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl --output torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
+RUN pip install --no-cache-dir torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
+RUN rm torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
+RUN pip install --no-cache-dir torchaudio==0.7.2
+
+# Install python packages
+RUN pip --no-cache-dir install numpy llvmlite numba opencv-python open3d imageio_ffmpeg -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+RUN pip --no-cache-dir install tensorboardX easydict pyyaml==5.4.1 scipy==1.5.4 scikit-image tqdm SharedArray six -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+RUN pip --no-cache-dir install spconv-cu113 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+RUN cd /tmp && wget http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_amd64.deb && dpkg -i s5cmd_2.2.2_linux_amd64.deb && rm s5cmd_2.2.2_linux_amd64.deb
