@@ -46,7 +46,6 @@ RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torch-
 RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl --output torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl
 RUN pip install --no-cache-dir torch-1.11.0+cu113-cp38-cp38-linux_x86_64.whl torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl
 RUN rm torch-1.11.0+cu113-cp38-cp38-linux_x86_64.whl torchvision-0.12.0+cu113-cp38-cp38-linux_x86_64.whl
-RUN pip install --no-cache-dir torchaudio==0.7.2
 
 # Install python packages
 RUN pip --no-cache-dir install numpy llvmlite numba opencv-python open3d imageio_ffmpeg markupsafe==2.0.1 werkzeug==2.0.3 s3cmd==2.3.0 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
