@@ -19,7 +19,7 @@ RUN sh -c 'echo "deb http://security.ubuntu.com/ubuntu/ focal-security main rest
 RUN apt-get update && apt-get install -y --no-install-recommends mesa-utils x11-apps && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y wget zip libpcap-dev x11-xserver-utils python3-pip git libparmetis-dev python3-tk
 
-RUN pip3 install easydict scipy numpy==1.22.1 tqdm open3d -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+RUN pip3 install easydict scipy numpy==1.22.1 tqdm open3d s3cmd==2.3.0 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 RUN pip3 install torch==1.7.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
 
 RUN git clone https://github.com/eric-wieser/ros_numpy /usr/local/src/ros_numpy
