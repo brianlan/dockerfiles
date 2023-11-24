@@ -1,1 +1,3 @@
 *.tar
+checkpoints
+python-packages
