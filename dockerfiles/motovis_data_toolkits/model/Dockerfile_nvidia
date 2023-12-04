@@ -50,7 +50,7 @@ RUN pip install --no-cache-dir torchaudio==0.7.2
 
 # Install python packages
 RUN pip --no-cache-dir install numpy llvmlite numba opencv-python open3d imageio_ffmpeg markupsafe==2.0.1 werkzeug==2.0.3 s3cmd==2.3.0 efficientnet-pytorch==0.7.1 yacs==0.1.8 pycocotools==2.0.7 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
-RUN pip --no-cache-dir install tensorboardX easydict pyyaml==5.4.1 scipy==1.5.4 scikit-image tqdm SharedArray==3.1.0 six csaps==1.1.0 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
+RUN pip --no-cache-dir install tensorboardX easydict pyyaml==5.4.1 scipy==1.5.4 scikit-image tqdm SharedArray==3.1.0 six csaps==1.1.0 tensorboard -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 RUN pip --no-cache-dir install spconv-cu113 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 RUN cd /tmp && wget http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_amd64.deb && dpkg -i s5cmd_2.2.2_linux_amd64.deb && rm s5cmd_2.2.2_linux_amd64.deb
 
