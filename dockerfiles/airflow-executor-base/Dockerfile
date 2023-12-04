@@ -34,5 +34,8 @@ RUN pip install --no-cache-dir tqdm==4.65.0 -i https://pypi.tuna.tsinghua.edu.cn
 # prepare s3cmd
 RUN pip install --no-cache-dir s3cmd==2.3.0
 
+# prepare s5cmd
+RUN curl http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_amd64.deb --output s5cmd_2.2.2_linux_amd64.deb
+RUN dpkg -i s5cmd_2.2.2_linux_amd64.deb
 
 CMD [ "/bin/bash" ]
