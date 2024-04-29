@@ -1,5 +1,4 @@
-FROM nvidia/cuda:11.0.3-cudnn8-devel
-RUN mkdir -p /workspace
+FROM nvidia/cuda:11.3.1-cudnn8-devel-ubuntu20.04
 
 # COPY source/ubuntu-20.04/sources.list /etc/apt/sources.list
 RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list /etc/apt/sources.list
@@ -19,7 +18,7 @@ RUN echo 'Asia/Shanghai' >/etc/timezone
 # Install basics
 RUN apt-get update -y \
     && apt-get install build-essential -y \
-    && apt-get install -y git curl ca-certificates bzip2 tree htop wget sshfs\
+    && apt-get install -y git curl ca-certificates bzip2 tree htop wget \
     && apt-get install -y libglib2.0-0 libsm6 libxext6 libxrender-dev bmon g++ \
     && apt install -y libgl1-mesa-glx x11-xserver-utils \
     && apt-get clean \
@@ -39,21 +38,5 @@ RUN rm anaconda.sh
 ENV PATH=/opt/conda/bin:$PATH
 ENV CUDA_HOME=/usr/local/cuda
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-COPY source/conda/condarc /root/.condarc
 
-# install pytorch
-RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl --output torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl
-RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl --output torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
-RUN pip install --no-cache-dir torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
-RUN rm torch-1.7.1+cu110-cp38-cp38-linux_x86_64.whl torchvision-0.8.2+cu110-cp38-cp38-linux_x86_64.whl
-RUN pip install --no-cache-dir torchaudio==0.7.2
-
-# Install python packages
-RUN pip --no-cache-dir install numpy llvmlite numba opencv-python open3d imageio_ffmpeg markupsafe==2.0.1 werkzeug==2.0.3 s3cmd==2.3.0 efficientnet-pytorch==0.7.1 yacs==0.1.8 pycocotools==2.0.7 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
-RUN pip --no-cache-dir install tensorboardX easydict pyyaml==5.4.1 scipy==1.5.4 scikit-image tqdm SharedArray==3.1.0 six csaps==1.1.0 tensorboard -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
-RUN pip --no-cache-dir install spconv-cu113 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
-RUN cd /tmp && wget http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_amd64.deb && dpkg -i s5cmd_2.2.2_linux_amd64.deb && rm s5cmd_2.2.2_linux_amd64.deb
-
-# prepare pytorch resnet-18 pretrain model
-RUN mkdir -p /root/.cache/torch/hub/checkpoints
-RUN curl http://192.168.22.208:8000/docker-building-files/checkpoints/resnet18-f37072fd.pth --output /root/.cache/torch/hub/checkpoints/resnet18-5c106cde.pth
+RUN pip install evo --upgrade --no-binary evo
