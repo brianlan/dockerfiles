@@ -33,3 +33,12 @@ RUN wget -O /usr/local/src/gtsam.zip https://github.com/borglab/gtsam/archive/4.
 
 RUN cd /usr/local/src && unzip gtsam.zip
 RUN cd /usr/local/src/gtsam-4.0.0-alpha2/ && mkdir build && cd build && cmake .. && make install -j16
+
+# prepare s3cmd
+RUN pip install --no-cache-dir s3cmd==2.3.0
+
+# install s5cmd
+RUN curl http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd --output /usr/local/bin/s5cmd
+RUN chmod +x /usr/local/bin/s5cmd
+
+WORKDIR /workspace
