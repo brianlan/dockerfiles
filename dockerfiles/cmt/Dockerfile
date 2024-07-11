@@ -112,6 +112,6 @@ RUN cd /workspace/mmdetection3d && pip install  -e .
 
 # Rest
 WORKDIR /workspace
-
 CMD [ "/bin/bash"  ]
 
+# docker build -f Dockerfile -t 192.168.23.222:4443/cmt:v0.1 .
