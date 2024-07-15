@@ -22,7 +22,7 @@ RUN rm anaconda.sh
 ENV PATH=/opt/conda/bin:$PATH
 ENV CUDA_HOME=/usr/local/cuda
 RUN pip config set global.index-url https://pypi.mirrors.ustc.edu.cn/simple
-COPY .condarc /root/.condarc
+COPY source/conda/condarc /root/.condarc
 
 # prepare s3cmd
 RUN pip install --no-cache-dir s3cmd==2.3.0
@@ -110,6 +110,8 @@ RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/mmdete
 RUN cd /workspace && unzip mmdetection3d.zip
 RUN cd /workspace/mmdetection3d && pip install  -e .
 RUN sed -i '59a\ \ \ \ return\ arch' /opt/conda/lib/python3.8/site-packages/spconv/pytorch/cppcore.py
+
+RUN pip install --no-cache-dir loguru==0.7.2 
 
 # Rest
 WORKDIR /workspace
