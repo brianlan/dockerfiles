@@ -109,6 +109,7 @@ RUN pip install --no-cache-dir mmsegmentation==0.30.0
 RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/mmdetection3d.zip --output /workspace/mmdetection3d.zip
 RUN cd /workspace && unzip mmdetection3d.zip
 RUN cd /workspace/mmdetection3d && pip install  -e .
+RUN sed -i '59a\ \ \ \ return\ arch' /opt/conda/lib/python3.8/site-packages/spconv/pytorch/cppcore.py
 
 # Rest
 WORKDIR /workspace
