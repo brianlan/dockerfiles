@@ -108,9 +108,12 @@ RUN pip install --no-cache-dir bitstring==4.0.1
 RUN pip install --no-cache-dir cumm-cu113==0.2.8
 RUN pip install --no-cache-dir flask==3.0.3
 RUN pip install --no-cache-dir pybind11==2.9.1
-RUN pip install --no-cache-dir copious==0.1.15 -i https://www.pypi.org/simple
+RUN pip install --no-cache-dir copious==0.1.19 -i https://www.pypi.org/simple
 
-
+# install motovismark
+RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/motovismark-0.0.2.post0-py3-none-any.whl --output motovismark-0.0.2.post0-py3-none-any.whl \
+    && pip install --no-cache-dir motovismark-0.0.2.post0-py3-none-any.whl \
+    && rm motovismark-0.0.2.post0-py3-none-any.whl
 
 
 # Rest
