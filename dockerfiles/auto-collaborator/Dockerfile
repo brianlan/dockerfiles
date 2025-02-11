@@ -30,5 +30,9 @@ RUN pip install --no-cache-dir \
         easydict \
         pandas
 
+# install s5cmd
+RUN wget https://github.com/peak/s5cmd/releases/download/v2.3.0/s5cmd_2.3.0_linux_amd64.deb -O /s5cmd.deb
+RUN dpkg -i /s5cmd.deb
+RUN rm /s5cmd.deb
 
 CMD [ "/bin/bash" ]
