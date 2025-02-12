@@ -64,10 +64,8 @@ RUN pip install --no-cache-dir \
         transformers-stream-generator==0.0.4
 
 # Install flash attention
-RUN pip install --no-cache-dir flash-attn==2.6.1
-# COPY flash_attn-2.6.1+cu123torch2.4cxx11abiTRUE-cp310-cp310-linux_x86_64.whl /flash_attn-2.6.1+cu123torch2.4cxx11abiTRUE-cp310-cp310-linux_x86_64.whl
-# RUN pip install --no-cache-dir /flash_attn-2.6.1+cu123torch2.4cxx11abiTRUE-cp310-cp310-linux_x86_64.whl
-# RUN rm /flash_attn-2.6.1+cu123torch2.4cxx11abiTRUE-cp310-cp310-linux_x86_64.whl
+RUN pip install --no-cache-dir ninja
+RUN MAX_JOBS=4 pip install -v flash-attn==2.7.3 --no-cache-dir --no-build-isolation
 
 WORKDIR /workspace
 
