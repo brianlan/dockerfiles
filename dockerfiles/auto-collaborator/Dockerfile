@@ -8,9 +8,9 @@ RUN set -x && \
 COPY source/debian-bullseye/sources.list /etc/apt/sources.list
 RUN set -x && \
     apt-get update && \
-    apt-get install -y --no-install-recommends wget curl git vim htop iputils-ping && \
+    apt-get install -y --no-install-recommends wget curl git vim htop iputils-ping libgl1-mesa-glx build-essential libsm6 libxrender1 && \
     rm -rf /var/lib/apt/lists/*
-
+    
 # install conda packages
 COPY source/conda/condarc /root/.condarc
 RUN conda install -y pip 
