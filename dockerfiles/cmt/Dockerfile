@@ -112,6 +112,7 @@ RUN cd /workspace/mmdetection3d && pip install  -e .
 RUN sed -i '59a\ \ \ \ return\ arch' /opt/conda/lib/python3.8/site-packages/spconv/pytorch/cppcore.py
 
 RUN pip install --no-cache-dir loguru==0.7.2 
+RUN pip install --no-cache-dir motmetrics==1.1.3
 
 # Rest
 WORKDIR /workspace
