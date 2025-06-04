@@ -74,7 +74,7 @@ RUN apt-get update \
 RUN pip install --no-cache-dir tensorboard==2.14.0 \
     tensorboardX==2.4.1 \
     opencv-python==4.9.0.80 \
-    pandas==2.0.3 \
+    pandas==1.5.0 \
     scipy==1.10.1 \
     matplotlib==3.5.3 \
     scikit-image==0.19.3 \
