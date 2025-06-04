@@ -113,6 +113,7 @@ RUN sed -i '59a\ \ \ \ return\ arch' /opt/conda/lib/python3.8/site-packages/spco
 
 RUN pip install --no-cache-dir loguru==0.7.2 
 RUN pip install --no-cache-dir motmetrics==1.1.3
+RUN pip install --no-cache-dir fvcore==0.1.5.post20221221
 
 # Rest
 WORKDIR /workspace
