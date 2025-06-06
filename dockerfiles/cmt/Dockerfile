@@ -9,15 +9,15 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # install anaconda
-RUN curl http://192.168.22.208:8000/docker-building-files/anaconda/Anaconda3-2021.05-Linux-x86_64.sh --output anaconda.sh
-RUN /bin/bash anaconda.sh -b -p /opt/conda \
+COPY Anaconda3-2021.05-Linux-x86_64.sh /Anaconda3-2021.05-Linux-x86_64.sh
+RUN /bin/bash /Anaconda3-2021.05-Linux-x86_64.sh -b -p /opt/conda \
     && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
     && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
     && echo "conda activate base" >> ~/.bashrc \
     && find /opt/conda/ -follow -type f -name '*.a' -delete \
     && find /opt/conda/ -follow -type f -name '*.js.map' -delete \
     && /opt/conda/bin/conda clean -afy
-RUN rm anaconda.sh
+RUN rm /Anaconda3-2021.05-Linux-x86_64.sh
 
 ENV PATH=/opt/conda/bin:$PATH
 ENV CUDA_HOME=/usr/local/cuda
@@ -27,8 +27,8 @@ COPY source/conda/condarc /root/.condarc
 # prepare s3cmd
 RUN pip install --no-cache-dir s3cmd==2.3.0
 # install s5cmd
-RUN curl http://192.168.22.208:8000/docker-building-files/s5cmd/s5cmd_2.2.2_linux_amd64.deb --output s5cmd_2.2.2_linux_amd64.deb
-RUN dpkg -i s5cmd_2.2.2_linux_amd64.deb
+COPY s5cmd_2.2.2_linux_amd64.deb /s5cmd_2.2.2_linux_amd64.deb
+RUN dpkg -i /s5cmd_2.2.2_linux_amd64.deb
 # install s3fs
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -40,21 +40,25 @@ RUN apt-get update \
 
 
 # install pytorch
-RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torch-1.9.0+cu111-cp38-cp38-linux_x86_64.whl --output torch-1.9.0+cu111-cp38-cp38-linux_x86_64.whl
-RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/torchvision-0.10.0+cu111-cp38-cp38-linux_x86_64.whl --output torchvision-0.10.0+cu111-cp38-cp38-linux_x86_64.whl
-RUN pip install --no-cache-dir torch-1.9.0+cu111-cp38-cp38-linux_x86_64.whl torchvision-0.10.0+cu111-cp38-cp38-linux_x86_64.whl
-RUN rm torch-1.9.0+cu111-cp38-cp38-linux_x86_64.whl torchvision-0.10.0+cu111-cp38-cp38-linux_x86_64.whl
-RUN pip install --no-cache-dir torchaudio==0.9.0
+COPY torch-1.10.1+cu111-cp38-cp38-linux_x86_64.whl /workspace/torch-1.10.1+cu111-cp38-cp38-linux_x86_64.whl
+COPY torchvision-0.11.2+cu111-cp38-cp38-linux_x86_64.whl /workspace/torchvision-0.11.2+cu111-cp38-cp38-linux_x86_64.whl
+COPY torchaudio-0.10.1+cu111-cp38-cp38-linux_x86_64.whl /workspace/torchaudio-0.10.1+cu111-cp38-cp38-linux_x86_64.whl
+RUN pip install --no-cache-dir /workspace/torch-1.10.1+cu111-cp38-cp38-linux_x86_64.whl
+RUN pip install --no-cache-dir /workspace/torchvision-0.11.2+cu111-cp38-cp38-linux_x86_64.whl
+RUN pip install --no-cache-dir /workspace/torchaudio-0.10.1+cu111-cp38-cp38-linux_x86_64.whl
+RUN rm -rf /torch-1.10.1+cu111-cp38-cp38-linux_x86_64.whl
+RUN rm -rf /torchvision-0.11.2+cu111-cp38-cp38-linux_x86_64.whl
+RUN rm -rf /torchaudio-0.10.1+cu111-cp38-cp38-linux_x86_64.whl
 
 
 
 # install multirun
-RUN wget -c http://192.168.22.208:8000/docker-building-files/executables/multirun-x86_64-linux-gnu-1.1.3.tar.gz -O - | tar -xz && mv multirun /bin
+# RUN wget -c http://192.168.22.208:8000/docker-building-files/executables/multirun-x86_64-linux-gnu-1.1.3.tar.gz -O - | tar -xz && mv multirun /bin
 
 # prepare pytorch resnet-18 pretrain model
-RUN mkdir -p /root/.cache/torch/hub/checkpoints
+# RUN mkdir -p /root/.cache/torch/hub/checkpoints
 
-RUN curl http://192.168.22.208:8000/docker-building-files/checkpoints/resnet18-5c106cde.pth --output /root/.cache/torch/hub/checkpoints/resnet18-5c106cde.pth
+# RUN curl http://192.168.22.208:8000/docker-building-files/checkpoints/resnet18-5c106cde.pth --output /root/.cache/torch/hub/checkpoints/resnet18-5c106cde.pth
 
 # install cmake
 RUN apt-get update \
@@ -98,22 +102,24 @@ RUN pip install --no-cache-dir bitstring==4.0.1
 RUN pip install --no-cache-dir pybind11==2.11.1
 RUN pip install --no-cache-dir copious==0.1.16 -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir easydict==1.13
+RUN pip install --no-cache-dir loguru==0.7.2 
+RUN pip install --no-cache-dir motmetrics==1.1.3
+RUN pip install --no-cache-dir fvcore==0.1.5.post20221221
 
-RUN pip install --no-cache-dir mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
 RUN pip install --no-cache-dir numba==0.53.0 numpy==1.23.5 yapf==0.40.1  setuptools==59.5.0  spconv-cu111==2.1.21
 RUN pip install --no-cache-dir flash-attn==0.2.2
-RUN pip install --no-cache-dir mmdet==2.28.2
-RUN pip install --no-cache-dir mmsegmentation==0.30.0
 
-
-RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/mmdetection3d.zip --output /workspace/mmdetection3d.zip
+COPY mmdetection3d.zip /workspace/mmdetection3d.zip
 RUN cd /workspace && unzip mmdetection3d.zip
 RUN cd /workspace/mmdetection3d && pip install  -e .
 RUN sed -i '59a\ \ \ \ return\ arch' /opt/conda/lib/python3.8/site-packages/spconv/pytorch/cppcore.py
 
-RUN pip install --no-cache-dir loguru==0.7.2 
-RUN pip install --no-cache-dir motmetrics==1.1.3
-RUN pip install --no-cache-dir fvcore==0.1.5.post20221221
+RUN pip install --no-cache-dir mmdet==2.28.2
+RUN pip install --no-cache-dir mmsegmentation==0.30.0
+
+# Install mmcv-full in the container (which has cuda env) and do docker commit to save the image
+# RUN pip install --no-cache-dir mmcv-full==1.6.0 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.10.1/index.html
+
 
 # Rest
 WORKDIR /workspace
