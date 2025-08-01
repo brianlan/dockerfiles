@@ -1,3 +1,9 @@
 *.tar
 checkpoints
 python-packages
+AutoCollaborator*
+*.whl
+*.zip
+*.deb
+mmdetection3d
+Anaconda3*
