@@ -1,11 +1,19 @@
 FROM continuumio/miniconda3:22.11.1
 
+# Ensure /tmp exists and is writable
+RUN mkdir -p /tmp && chmod 1777 /tmp
+
+# Create workspace directory
+RUN mkdir -p /workspace
+
+# Copy sources.list for Debian Bullseye
+COPY source/debian-bullseye/sources.list /etc/apt/sources.list
+
 # install packages from apt-get
 RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates 
 
-COPY source/debian-bullseye/sources.list /etc/apt/sources.list
 RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-recommends wget curl git vim htop iputils-ping libgl1-mesa-glx build-essential libsm6 libxrender1 && \
@@ -35,4 +43,11 @@ RUN wget https://github.com/peak/s5cmd/releases/download/v2.3.0/s5cmd_2.3.0_linu
 RUN dpkg -i /s5cmd.deb
 RUN rm /s5cmd.deb
 
-CMD [ "/bin/bash" ]
+# Copy the auto-collaborator source code
+COPY AutoCollaborator-master-056815c1e13042d7ae64f692ba8438ebe5128396 /workspace/AutoCollaborator
+
+WORKDIR /workspace/AutoCollaborator
+
+ENTRYPOINT [ "python", "main.py" ]
+
+CMD [ "--port", "8081" ]
