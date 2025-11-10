@@ -1,6 +1,7 @@
 FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
 
 RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list
+RUN mkdir -p /tmp && chmod 1777 /tmp
 RUN apt-get update \
     && apt-get install -y libgl1-mesa-glx build-essential wget git curl libsm6 libxrender1 vim htop iputils-ping \
     && apt-get clean \
