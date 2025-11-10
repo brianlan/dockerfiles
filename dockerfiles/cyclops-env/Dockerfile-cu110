@@ -115,6 +115,9 @@ RUN curl http://192.168.22.208:8000/docker-building-files/python-packages/motovi
     && pip install --no-cache-dir motovismark-0.0.2.post0-py3-none-any.whl \
     && rm motovismark-0.0.2.post0-py3-none-any.whl
 
+# install other python dependencies
+RUN pip install --no-cache-dir moviepy
+
 
 # Rest
 WORKDIR /workspace
