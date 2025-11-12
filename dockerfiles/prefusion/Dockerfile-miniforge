@@ -1,0 +1,94 @@
+FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
+
+RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list
+RUN mkdir -p /tmp && chmod 1777 /tmp
+RUN apt-get update \
+    && apt-get install -y libgl1-mesa-glx build-essential wget git curl libsm6 libxrender1 vim htop iputils-ping \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# install miniforge
+RUN curl https://mirrors.zju.edu.cn/miniforge/Miniforge3-Linux-x86_64.sh --output conda_installer.sh
+RUN /bin/bash conda_installer.sh -b -p /opt/conda \
+    && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \
+    && echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc \
+    && echo "conda activate base" >> ~/.bashrc \
+    && find /opt/conda/ -follow -type f -name '*.a' -delete \
+    && find /opt/conda/ -follow -type f -name '*.js.map' -delete \
+    && /opt/conda/bin/conda clean -afy
+RUN rm conda_installer.sh
+
+ENV PATH=/opt/conda/bin:$PATH
+ENV CUDA_HOME=/usr/local/cuda
+
+# conda install critical libraries
+# Note: miniforge defaults to conda-forge, so we specify pytorch and nvidia channels explicitly
+RUN conda install -y numba=0.60.0 numpy=1.26.4 scipy=1.13.1 pytorch=2.4.1 torchvision=0.19.1 torchaudio=2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia
+
+# pip install other libraries
+RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir copious==0.1.23 easydict==1.13 nuscenes-devkit opencv-python-headless virtual-camera==0.0.4.3 scikit-learn==1.4.2 open3d==0.19.0 transformers==4.45.2 pypcd-imp==0.1.5 mmengine==0.10.5 mmdet3d==1.4.0 mmdet==3.2.0 pytest==8.3.3 redis==5.2.0 s3cmd==2.3.0 s5cmd pytest-cov loguru tqdm
+RUN pip install --no-cache-dir ninja
+
+# If not use docker build, we need to temporarily put cuda (of correct version) to /usr/loca/cuda or conda install cuda-toolkit cuda-cudart cuda-cccl libcublas libcusparse libcusolver
+# RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation flash-attn==2.6.3 -v
+COPY flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl
+RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl -v
+RUN rm -rf /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl
+
+# Install mmcv
+RUN pip install --no-cache-dir openmim
+RUN pip install --no-cache-dir mmcv==2.1.0
+
+# RUN mv /etc/apt/sources.list.bak /etc/apt/sources.list
+
+# install libgllib2.0 and set TimeZone
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+RUN apt-get update \
+   && apt-get install -y libglib2.0-0 libxext6 tzdata  \
+   && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+   && echo $TZ > /etc/timezone \
+   && dpkg-reconfigure -f noninteractive tzdata \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*
+
+# install pytorch3d
+COPY ./pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl /pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl
+RUN pip install --no-cache-dir /pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl
+RUN rm -rf /pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl
+
+# install extra system utils
+
+# install extra python packages
+RUN pip install --no-cache-dir spconv-cu121==2.3.7
+RUN pip install --no-cache-dir onnx==1.17.0
+RUN pip install --no-cache-dir onnxruntime==1.20.1
+RUN pip install --no-cache-dir polars==1.28.0
+RUN pip install --no-cache-dir mmsegmentation==1.2.2
+RUN pip install --no-cache-dir ftfy==6.3.1
+RUN pip install --no-cache-dir regex==2024.11.6
+RUN pip install --no-cache-dir setuptools==80.9.0
+RUN pip install --no-cache-dir aim==3.29.1
+RUN pip install --no-cache-dir pydantic==2.11.7
+RUN pip install --no-cache-dir pydantic-settings==2.10.1
+RUN pip install --no-cache-dir more_itertools==10.7.0
+RUN pip install --no-cache-dir pypcd4==1.3.0
+RUN pip install --no-cache-dir mmpretrain==1.2.0
+RUN pip install --no-cache-dir timm==1.0.19
+RUN pip install --no-cache-dir kornia==0.8.1
+RUN pip install --no-cache-dir av2==0.3.5
+RUN pip install --no-cache-dir bagpy==0.5
+RUN pip install --no-cache-dir virtual-camera==1.0.2
+RUN pip install --no-cache-dir copious==0.1.32
+RUN pip install --no-cache-dir mtv4d==0.1.15
+RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
+RUN pip install --no-cache-dir pyproj==3.7.1
+RUN mkdir -p /tmp && chmod 1777 /tmp
+RUN apt-get update && apt-get install -y rsync && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /workspace
+
+CMD [ "/bin/bash"  ]
