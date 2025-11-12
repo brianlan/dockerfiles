@@ -3,7 +3,7 @@ FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
 RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list
 RUN mkdir -p /tmp && chmod 1777 /tmp
 RUN apt-get update \
-    && apt-get install -y libgl1-mesa-glx build-essential wget git curl libsm6 libxrender1 vim htop iputils-ping \
+    && apt-get install -y libgl1-mesa-glx build-essential wget rsync git curl libsm6 libxrender1 vim htop iputils-ping \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -39,7 +39,8 @@ RUN rm -rf /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl
 
 # Install mmcv
 RUN pip install --no-cache-dir openmim
-RUN pip install --no-cache-dir mmcv==2.1.0
+RUN pip cache purge
+RUN MAX_JOBS=16 FORCE_CUDA=1 MMCV_WITH_OPS=1 TORCH_CUDA_ARCH_LIST=8.0 mim install -v --no-cache-dir --no-build-isolation mmcv==2.1.0 -i https://mirrors.bfsu.edu.cn/pypi/web/simple
 
 # RUN mv /etc/apt/sources.list.bak /etc/apt/sources.list
 
@@ -85,8 +86,6 @@ RUN pip install --no-cache-dir copious==0.1.32
 RUN pip install --no-cache-dir mtv4d==0.1.15
 RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir pyproj==3.7.1
-RUN mkdir -p /tmp && chmod 1777 /tmp
-RUN apt-get update && apt-get install -y rsync && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
 WORKDIR /workspace
