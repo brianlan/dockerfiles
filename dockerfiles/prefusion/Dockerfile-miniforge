@@ -21,9 +21,13 @@ RUN rm conda_installer.sh
 ENV PATH=/opt/conda/bin:$PATH
 ENV CUDA_HOME=/usr/local/cuda
 
-# conda install critical libraries
+# conda install critical libraries with Python 3.10
 # Note: miniforge defaults to conda-forge, so we specify pytorch and nvidia channels explicitly
-RUN conda install -y numba=0.60.0 numpy=1.26.4 scipy=1.13.1 pytorch=2.4.1 torchvision=0.19.1 torchaudio=2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia
+# Reinstall pytorch after symlink to ensure CUDA support
+RUN conda install -y python=3.10
+RUN conda install -y cuda-toolkit=12.1 -c nvidia
+RUN conda install -y pytorch=2.4.1 torchvision=0.19.1 torchaudio=2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia
+RUN conda install -y numba=0.60.0 numpy=1.26.4 scipy=1.13.1
 
 # pip install other libraries
 RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
@@ -33,13 +37,12 @@ RUN pip install --no-cache-dir ninja
 
 # If not use docker build, we need to temporarily put cuda (of correct version) to /usr/loca/cuda or conda install cuda-toolkit cuda-cudart cuda-cccl libcublas libcusparse libcusolver
 # RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation flash-attn==2.6.3 -v
-COPY flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl
-RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl -v
-RUN rm -rf /flash_attn-2.6.3+cu124torch2.4-cp312-cp312-linux_x86_64.whl
+COPY flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl /flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation /flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl -v
+RUN rm -rf /flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
 
-# Install mmcv
+# Install mmcv with CUDA support
 RUN pip install --no-cache-dir openmim
-RUN pip cache purge
 RUN MAX_JOBS=16 FORCE_CUDA=1 MMCV_WITH_OPS=1 TORCH_CUDA_ARCH_LIST=8.0 mim install -v --no-cache-dir --no-build-isolation mmcv==2.1.0 -i https://mirrors.bfsu.edu.cn/pypi/web/simple
 
 # RUN mv /etc/apt/sources.list.bak /etc/apt/sources.list
@@ -56,9 +59,9 @@ RUN apt-get update \
    && rm -rf /var/lib/apt/lists/*
 
 # install pytorch3d
-COPY ./pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl /pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl
-RUN pip install --no-cache-dir /pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl
-RUN rm -rf /pytorch3d-0.7.8+5043d15pt2.4.1cu121-cp312-cp312-linux_x86_64.whl
+COPY ./pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
+RUN pip install --no-cache-dir /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
+RUN rm -rf /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
 
 # install extra system utils
 
