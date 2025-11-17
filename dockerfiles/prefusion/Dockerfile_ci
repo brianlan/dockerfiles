@@ -30,9 +30,6 @@ RUN pip install --no-cache-dir \
         numba==0.60.0 \
         numpy==1.26.4 \
         scipy==1.14.1 \
-        torch==2.4.1 \
-        torchvision==0.19.1 \
-        torchaudio==2.4.1 \
         spconv-cu121==2.3.7 \
         copious==0.1.24 \
         easydict==1.13 \
@@ -80,10 +77,6 @@ RUN pip install --no-cache-dir copious==0.1.32
 RUN pip install --no-cache-dir mtv4d==0.1.15
 RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir pyproj==3.7.1
-
-# RUN pip install --no-cache-dir \
-        # nuscenes-devkit \
-        # redis==5.2.0
 
 WORKDIR /workspace
 
