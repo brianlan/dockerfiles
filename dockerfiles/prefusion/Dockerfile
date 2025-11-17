@@ -25,14 +25,13 @@ ENV CUDA_HOME=/usr/local/cuda
 # Note: miniforge defaults to conda-forge, so we specify pytorch and nvidia channels explicitly
 # Reinstall pytorch after symlink to ensure CUDA support
 RUN conda install -y python=3.10
-RUN conda install -y cuda-toolkit=12.1 -c nvidia
-RUN conda install -y pytorch=2.4.1 torchvision=0.19.1 torchaudio=2.4.1 pytorch-cuda=12.1 -c pytorch -c nvidia
-RUN conda install -y numba=0.60.0 numpy=1.26.4 scipy=1.13.1
+# RUN pip install --no-cache-dir --pre torch==2.4.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+RUN pip install --no-cache-dir --pre torch==2.4.1 torchvision torchaudio --index-url https://mirror.sjtu.edu.cn/pytorch-wheels/cu121
 
 # pip install other libraries
 RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir copious==0.1.23 easydict==1.13 nuscenes-devkit opencv-python-headless virtual-camera==0.0.4.3 scikit-learn==1.4.2 open3d==0.19.0 transformers==4.45.2 pypcd-imp==0.1.5 mmengine==0.10.5 mmdet3d==1.4.0 mmdet==3.2.0 pytest==8.3.3 redis==5.2.0 s3cmd==2.3.0 s5cmd pytest-cov loguru tqdm
+RUN pip install --no-cache-dir numba==0.60.0 numpy==1.26.4 scipy==1.13.1 easydict==1.13 nuscenes-devkit opencv-python-headless virtual-camera==0.0.4.3 scikit-learn==1.4.2 open3d==0.19.0 transformers==4.45.2 pypcd-imp==0.1.5 mmengine==0.10.5 mmdet3d==1.4.0 mmdet==3.2.0 pytest==8.3.3 redis==5.2.0 s3cmd==2.3.0 s5cmd pytest-cov loguru tqdm
 RUN pip install --no-cache-dir ninja
 
 # If not use docker build, we need to temporarily put cuda (of correct version) to /usr/loca/cuda or conda install cuda-toolkit cuda-cudart cuda-cccl libcublas libcusparse libcusolver
@@ -46,6 +45,7 @@ RUN pip install --no-cache-dir openmim
 RUN MAX_JOBS=16 FORCE_CUDA=1 MMCV_WITH_OPS=1 TORCH_CUDA_ARCH_LIST=8.0 mim install -v --no-cache-dir --no-build-isolation mmcv==2.1.0 -i https://mirrors.bfsu.edu.cn/pypi/web/simple
 
 # RUN mv /etc/apt/sources.list.bak /etc/apt/sources.list
+
 
 # install libgllib2.0 and set TimeZone
 ENV DEBIAN_FRONTEND=noninteractive
@@ -62,6 +62,10 @@ RUN apt-get update \
 COPY ./pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
 RUN pip install --no-cache-dir /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
 RUN rm -rf /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
+
+# install motmetrics
+RUN pip install --no-cache-dir motmetrics==1.1.3
+RUN sed -i "8c\from collections.abc import Iterable\nfrom collections import OrderedDict" /opt/conda/lib/python3.10/site-packages/motmetrics/metrics.py
 
 # install extra system utils
 
@@ -87,7 +91,7 @@ RUN pip install --no-cache-dir bagpy==0.5
 RUN pip install --no-cache-dir virtual-camera==1.0.2
 RUN pip install --no-cache-dir copious==0.1.32
 RUN pip install --no-cache-dir mtv4d==0.1.15
-RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
+RUN pip install --no-cache-dir moviepy==2.2.1 # -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir pyproj==3.7.1
 
 

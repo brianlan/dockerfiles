@@ -1,0 +1,91 @@
+FROM condaforge/miniforge3:25.9.1-0
+
+RUN apt-get update \
+    && apt-get install -y libgl1 build-essential wget git curl libsm6 libxrender1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
+ENV PATH=/opt/conda/bin:$PATH
+
+# install libgllib2.0 and set TimeZone
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Shanghai
+RUN apt-get update \
+   && apt-get install -y libglib2.0-0 libxext6 tzdata  \
+   && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+   && echo $TZ > /etc/timezone \
+   && dpkg-reconfigure -f noninteractive tzdata \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*
+
+RUN conda install -y python=3.10
+RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
+RUN pip install --no-cache-dir --upgrade pip
+
+RUN pip install --no-cache-dir torch==2.4.1 torchvision torchaudio --index-url https://mirror.sjtu.edu.cn/pytorch-wheels/cpu
+
+# pip install other libraries
+RUN pip install --no-cache-dir \
+        numba==0.60.0 \
+        numpy==1.26.4 \
+        scipy==1.14.1 \
+        torch==2.4.1 \
+        torchvision==0.19.1 \
+        torchaudio==2.4.1 \
+        spconv-cu121==2.3.7 \
+        copious==0.1.24 \
+        easydict==1.13 \
+        opencv-python-headless \
+        virtual-camera==0.0.4.3 \
+        pypcd-imp==0.1.5 \
+        open3d==0.18.0 \
+        cachetools==5.5.0 \
+        mmengine==0.10.5 \
+        mmdet==3.2.0 \
+        mmdet3d==1.4.0 \
+        pytest==8.3.3 \
+        pytest-cov \
+        loguru \
+        tqdm
+
+# Install pytorch3d
+RUN pip install --no-cache-dir "git+https://github.com/facebookresearch/pytorch3d.git@stable"
+
+# Install mmcv
+RUN pip install --no-cache-dir openmim
+RUN MAX_JOBS=16 MMCV_WITH_OPS=1 mim install -v --no-cache-dir --no-build-isolation mmcv==2.1.0
+
+# install motmetrics
+RUN pip install --no-cache-dir motmetrics==1.1.3
+RUN sed -i "8c\from collections.abc import Iterable\nfrom collections import OrderedDict" /opt/conda/lib/python3.10/site-packages/motmetrics/metrics.py
+
+# Install flash attention
+RUN pip install --no-cache-dir flash-attn==2.6.3
+RUN pip install --no-cache-dir polars==1.28.0
+RUN pip install --no-cache-dir mmsegmentation==1.2.2
+RUN pip install --no-cache-dir ftfy==6.3.1
+RUN pip install --no-cache-dir regex==2024.11.6
+RUN pip install --no-cache-dir pydantic==2.11.7
+RUN pip install --no-cache-dir pydantic-settings==2.10.1
+RUN pip install --no-cache-dir more_itertools==10.7.0
+RUN pip install --no-cache-dir pypcd4==1.3.0
+RUN pip install --no-cache-dir mmpretrain==1.2.0
+RUN pip install --no-cache-dir timm==1.0.19
+RUN pip install --no-cache-dir kornia==0.8.1
+RUN pip install --no-cache-dir setuptools==80.9.0
+RUN pip install --no-cache-dir bagpy==0.5
+RUN pip install --no-cache-dir virtual-camera==1.0.2
+RUN pip install --no-cache-dir copious==0.1.32
+RUN pip install --no-cache-dir mtv4d==0.1.15
+RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
+RUN pip install --no-cache-dir pyproj==3.7.1
+
+# RUN pip install --no-cache-dir \
+        # nuscenes-devkit \
+        # redis==5.2.0
+
+WORKDIR /workspace
+
+CMD [ "/bin/bash"  ]
+
