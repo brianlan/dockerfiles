@@ -72,11 +72,13 @@ RUN pip install --no-cache-dir --no-build-isolation timm==1.0.19
 RUN pip install --no-cache-dir kornia==0.8.1
 RUN pip install --no-cache-dir setuptools==80.9.0
 RUN pip install --no-cache-dir bagpy==0.5
-RUN pip install --no-cache-dir virtual-camera==1.0.2
+RUN pip install --no-cache-dir virtual-camera==1.0.3
 RUN pip install --no-cache-dir copious==0.1.32
 RUN pip install --no-cache-dir mtv4d==0.1.15
 RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir pyproj==3.7.1
+RUN pip install --no-cache-dir onnx==1.17.0
+RUN pip install --no-cache-dir onnxruntime==1.20.1
 
 WORKDIR /workspace
 
