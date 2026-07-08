@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
 RUN rm -rf /etc/apt/sources.list.d/cuda.list /etc/apt/sources.list.d/nvidia-ml.list
 RUN mkdir -p /tmp && chmod 1777 /tmp
@@ -25,20 +25,19 @@ ENV CUDA_HOME=/usr/local/cuda
 # Note: miniforge defaults to conda-forge, so we specify pytorch and nvidia channels explicitly
 # Reinstall pytorch after symlink to ensure CUDA support
 RUN conda install -y python=3.10
-# RUN pip install --no-cache-dir --pre torch==2.4.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-RUN pip install --no-cache-dir --pre torch==2.4.1 torchvision torchaudio --index-url https://mirror.sjtu.edu.cn/pytorch-wheels/cu121
+RUN pip install --no-cache-dir --pre torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://mirror.sjtu.edu.cn/pytorch-wheels/cu124
 
 # pip install other libraries
 RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir numba==0.60.0 numpy==1.26.4 scipy==1.13.1 easydict==1.13 nuscenes-devkit opencv-python-headless virtual-camera==0.0.4.3 scikit-learn==1.4.2 open3d==0.19.0 transformers==4.45.2 pypcd-imp==0.1.5 mmengine==0.10.5 mmdet3d==1.4.0 mmdet==3.2.0 pytest==8.3.3 redis==5.2.0 s3cmd==2.3.0 s5cmd pytest-cov loguru tqdm
+RUN pip install --no-cache-dir numba==0.60.0 numpy==1.26.4 scipy==1.13.1 easydict==1.13 nuscenes-devkit opencv-python-headless virtual-camera==0.0.4.3 scikit-learn==1.4.2 open3d==0.19.0 transformers==4.45.2 pypcd-imp==0.1.5 mmengine==0.10.7 mmdet3d==1.4.0 mmdet==3.2.0 pytest==8.3.3 redis==5.2.0 s3cmd==2.3.0 s5cmd pytest-cov loguru tqdm
 RUN pip install --no-cache-dir ninja
 
 # If not use docker build, we need to temporarily put cuda (of correct version) to /usr/loca/cuda or conda install cuda-toolkit cuda-cudart cuda-cccl libcublas libcusparse libcusolver
 # RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation flash-attn==2.6.3 -v
-COPY flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl /flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
-RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation /flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl -v
-RUN rm -rf /flash_attn-2.6.3+cu123torch2.4cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+COPY flash_attn-2.6.3+cu124torch2.6-cp310-cp310-linux_x86_64.whl /flash_attn-2.6.3+cu124torch2.6-cp310-cp310-linux_x86_64.whl
+RUN MAX_JOBS=4 pip install --no-cache-dir --no-build-isolation /flash_attn-2.6.3+cu124torch2.6-cp310-cp310-linux_x86_64.whl -v
+RUN rm -rf /flash_attn-2.6.3+cu124torch2.6-cp310-cp310-linux_x86_64.whl
 
 # Install mmcv with CUDA support
 RUN pip install --no-cache-dir openmim
@@ -59,9 +58,9 @@ RUN apt-get update \
    && rm -rf /var/lib/apt/lists/*
 
 # install pytorch3d
-COPY ./pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
-RUN pip install --no-cache-dir /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
-RUN rm -rf /pytorch3d-0.7.8+pt2.4.1cu121-cp310-cp310-linux_x86_64.whl
+COPY ./pytorch3d-0.7.8+5043d15pt2.6.0cu124-cp310-cp310-linux_x86_64.whl /pytorch3d-0.7.8+5043d15pt2.6.0cu124-cp310-cp310-linux_x86_64.whl
+RUN pip install --no-cache-dir /pytorch3d-0.7.8+5043d15pt2.6.0cu124-cp310-cp310-linux_x86_64.whl
+RUN rm -rf /pytorch3d-0.7.8+5043d15pt2.6.0cu124-cp310-cp310-linux_x86_64.whl
 
 # install motmetrics
 RUN pip install --no-cache-dir motmetrics==1.1.3
@@ -88,7 +87,7 @@ RUN pip install --no-cache-dir timm==1.0.19
 RUN pip install --no-cache-dir kornia==0.8.1
 RUN pip install --no-cache-dir av2==0.3.5
 RUN pip install --no-cache-dir bagpy==0.5
-RUN pip install --no-cache-dir virtual-camera==1.0.2
+RUN pip install --no-cache-dir virtual-camera==1.0.3
 RUN pip install --no-cache-dir copious==0.1.32
 RUN pip install --no-cache-dir mtv4d==0.1.15
 RUN pip install --no-cache-dir moviepy==2.2.1 # -i https://www.pypi.org/simple
