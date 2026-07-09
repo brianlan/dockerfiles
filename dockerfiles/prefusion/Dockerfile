@@ -25,7 +25,7 @@ ENV CUDA_HOME=/usr/local/cuda
 # Note: miniforge defaults to conda-forge, so we specify pytorch and nvidia channels explicitly
 # Reinstall pytorch after symlink to ensure CUDA support
 RUN conda install -y python=3.10
-RUN pip install --no-cache-dir --pre torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://mirror.sjtu.edu.cn/pytorch-wheels/cu124
+RUN pip install --no-cache-dir --pre torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0 --index-url https://download.pytorch.org/whl/cu124
 
 # pip install other libraries
 RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
@@ -92,6 +92,11 @@ RUN pip install --no-cache-dir copious==0.1.32
 RUN pip install --no-cache-dir mtv4d==0.1.15
 RUN pip install --no-cache-dir moviepy==2.2.1 # -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir pyproj==3.7.1
+RUN pip install --no-cache-dir ruff==0.15.20
+RUN pip install --no-cache-dir onnxscript==0.2.2
+RUN pip install --no-cache-dir onnxslim==0.1.48
+RUN pip install --no-cache-dir onnx-graphsurgeon==0.5.8
+
 
 
 WORKDIR /workspace
