@@ -23,7 +23,7 @@ RUN conda install -y python=3.10
 RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
 RUN pip install --no-cache-dir --upgrade pip
 
-RUN pip install --no-cache-dir torch==2.4.1 torchvision torchaudio --index-url https://mirror.sjtu.edu.cn/pytorch-wheels/cpu
+RUN pip install --no-cache-dir torch==2.6.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 # pip install other libraries
 RUN pip install --no-cache-dir \
@@ -38,7 +38,7 @@ RUN pip install --no-cache-dir \
         pypcd-imp==0.1.5 \
         open3d==0.18.0 \
         cachetools==5.5.0 \
-        mmengine==0.10.5 \
+        mmengine==0.10.7 \
         mmdet==3.2.0 \
         mmdet3d==1.4.0 \
         pytest==8.3.3 \
@@ -79,6 +79,10 @@ RUN pip install --no-cache-dir moviepy==2.2.1 -i https://www.pypi.org/simple
 RUN pip install --no-cache-dir pyproj==3.7.1
 RUN pip install --no-cache-dir onnx==1.17.0
 RUN pip install --no-cache-dir onnxruntime==1.20.1
+RUN pip install --no-cache-dir onnxscript==0.2.2
+RUN pip install --no-cache-dir onnxslim==0.1.48
+RUN pip install --no-cache-dir onnx-graphsurgeon==0.5.8
+RUN pip install --no-cache-dir --no-deps prefusion==2.4.1
 
 WORKDIR /workspace
 

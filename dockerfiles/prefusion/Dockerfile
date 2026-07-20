@@ -96,6 +96,7 @@ RUN pip install --no-cache-dir ruff==0.15.20
 RUN pip install --no-cache-dir onnxscript==0.2.2
 RUN pip install --no-cache-dir onnxslim==0.1.48
 RUN pip install --no-cache-dir onnx-graphsurgeon==0.5.8
+RUN pip install --no-cache-dir --no-deps prefusion==2.4.1
 
 
 
