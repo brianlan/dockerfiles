@@ -96,7 +96,7 @@ RUN pip install --no-cache-dir ruff==0.15.20
 RUN pip install --no-cache-dir onnxscript==0.2.2
 RUN pip install --no-cache-dir onnxslim==0.1.48
 RUN pip install --no-cache-dir onnx-graphsurgeon==0.5.8
-RUN pip install --no-cache-dir --no-deps prefusion==2.4.3
+RUN pip install --no-cache-dir --no-deps prefusion==2.4.9
 
 # make transitive deps explicit so the image doesn't rely on pip pulling them via prefusion's --no-deps install
 RUN pip install --no-cache-dir cachetools==7.1.4 matplotlib==3.10.9 pandas==2.3.3 requests==2.28.2 shapely==2.0.7 tabulate==0.10.0 tensorboard==2.21.0
